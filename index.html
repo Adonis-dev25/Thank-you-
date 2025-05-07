@@ -48,47 +48,27 @@
 
     /* Image Slider */
     .image-container {
-      position: relative;
-      width: 100%;
-      height: 300px;
-      overflow: hidden;
-      margin-bottom: 20px;
-      border-radius: 10px;
-    }
+  position: absolute;
+  top: 50px;
+  white-space: nowrap;
+  animation: moveImages 20s linear infinite;
+}
 
-    .image-container img {
-      width: 60%;
-      height: 90%;
-      object-fit: cover; /* This ensures images cover the container properly */
-      position: absolute;
-      animation: slide 15s infinite linear;
-    }
+.image-container img {
+  height: 500px;
+  margin-right: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px white;
+}
 
-    /* Slideshow animation */
-    @keyframes slide {
-      0% {
-        left: 100%;
-        opacity: 0;
-      }
-      5% {
-        opacity: 1;
-      }
-      33% {
-        left: 0;
-        opacity: 1;
-      }
-      38% {
-        opacity: 0;
-      }
-      66% {
-        left: -100%;
-        opacity: 0;
-      }
-      100% {
-        left: -100%;
-        opacity: 0;
-      }
-    }
+@keyframes moveImages {
+  0% {
+    left: 100%;
+  }
+  100% {
+    left: -100%;
+  }
+}
 
     /* Music Player Section */
     .music-player {
