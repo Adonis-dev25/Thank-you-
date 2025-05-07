@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Music Player with Controls</title>
+  <title>Music Player with Enhanced Slideshow</title>
   <style>
     /* General Setup */
     body {
@@ -46,43 +46,140 @@
       margin: 0 auto;
     }
 
-  /* Image Slider Container */
-  .slider-container {
-    width: 100%;
-    height: 300px;
-    margin: 20px 0 60px 0;
-    position: relative;
-    overflow: hidden;
-  }
-
-  /* Image Container */
-  .image-container {
-    position: absolute;
-    display: flex;
-    left: 100%;
-    height: 100%;
-    animation: moveImages 25s linear infinite;
-  }
-
-  /* Individual Images */
-  .image-container img {
-    height: 280px;
-    width: auto;
-    margin-right: 30px;
-    border-radius: 12px;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-    object-fit: cover;
-  }
-
-  /* Animation for Sliding Images */
-  @keyframes moveImages {
-    0% {
-      transform: translateX(0);
+    /* Enhanced Slideshow Section */
+    .slideshow-container {
+      width: 100%;
+      height: 400px;
+      margin: 20px 0 60px 0;
+      position: relative;
+      overflow: hidden;
+      border-radius: 15px;
+      box-shadow: 0 0 25px rgba(255, 0, 255, 0.4);
     }
-    100% {
-      transform: translateX(-200%); /* Adjust based on total width of your images */
+
+    /* Slides */
+    .slide {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 1.5s ease-in-out;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-  }
+
+    .slide.active {
+      opacity: 1;
+      z-index: 10;
+    }
+
+    /* Image styling */
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 15px;
+      transition: transform 10s ease;
+    }
+
+    .slide.active img {
+      transform: scale(1.1);
+    }
+
+    /* Slide navigation dots */
+    .slide-dots {
+      position: absolute;
+      bottom: 20px;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      z-index: 20;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      margin: 0 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .dot.active {
+      background: #fff;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    }
+
+    /* Slide overlay with text */
+    .slide-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 30px 20px;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+      color: white;
+      text-align: left;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.8s ease;
+      z-index: 15;
+    }
+
+    .slide.active .slide-overlay {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .slide-title {
+      font-size: 1.8em;
+      margin: 0 0 5px 0;
+      font-weight: bold;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    }
+
+    .slide-description {
+      font-size: 1em;
+      margin: 0;
+      max-width: 80%;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+    }
+
+    /* Slide arrows */
+    .slide-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 50px;
+      height: 50px;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.5em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 20;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .slide-arrow:hover {
+      background: rgba(0, 0, 0, 0.8);
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .prev-slide {
+      left: 20px;
+    }
+
+    .next-slide {
+      right: 20px;
+    }
 
     /* Music Player Section */
     .music-player {
@@ -240,6 +337,10 @@
 
     /* Responsive design */
     @media (max-width: 768px) {
+      .slideshow-container {
+        height: 300px;
+      }
+      
       .music-player {
         width: 95%;
       }
@@ -249,12 +350,20 @@
         font-size: 0.9em;
       }
       
-      .image-container {
-        height: 200px;
+      .slide-title {
+        font-size: 1.5em;
+      }
+      
+      .slide-description {
+        font-size: 0.9em;
       }
     }
 
     @media (max-width: 480px) {
+      .slideshow-container {
+        height: 250px;
+      }
+      
       .controls {
         flex-direction: column;
       }
@@ -269,6 +378,20 @@
         margin: 0 5px;
         font-size: 0.8em;
       }
+      
+      .slide-arrow {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2em;
+      }
+      
+      .slide-overlay {
+        padding: 15px;
+      }
+      
+      .slide-title {
+        font-size: 1.3em;
+      }
     }
   </style>
 </head>
@@ -277,21 +400,59 @@
   <!-- Container to center everything -->
   <div class="container">
 
-    <!-- Image Section (Images will slide here) -->
-    <div class="image-container">
-      <img src=" IMG-20250226-WA0111(1).jpg" alt="Image 1">
-      <img src="1746521210089.jpg" alt="Image 2">
-      <img src=" IMG-20250226-WA0111(1).jpg" alt="Image 3">
-      <img src="IMG-20250226-WA0111(1).jpg" alt="">
-      <img src="IMG_20250101_200753_489.jpg" alt=" ">
+    <!-- Enhanced Slideshow Section -->
+    <div class="slideshow-container" id="home">
+      <!-- Slide 1 -->
+      <div class="slide active">
+        <img src="IMG-20250226-WA0111(1).jpg" alt="Music Event">
+        <div class="slide-overlay">
+          <h3 class="slide-title">Music Is Life</h3>
+          <p class="slide-description">Experience the rhythm that moves your soul</p>
+        </div>
+      </div>
+      
+      <!-- Slide 2 -->
+      <div class="slide">
+        <img src="1746521210089.jpg" alt="Performance">
+        <div class="slide-overlay">
+          <h3 class="slide-title">Feel The Beat</h3>
+          <p class="slide-description">Let the music take control</p>
+        </div>
+      </div>
+      
+      <!-- Slide 3 -->
+      <div class="slide">
+        <img src="IMG-20250226-WA0111(1).jpg" alt="Concert">
+        <div class="slide-overlay">
+          <h3 class="slide-title">Live The Moment</h3>
+          <p class="slide-description">Create memories that last forever</p>
+        </div>
+      </div>
+      
+      <!-- Slide 4 -->
+      <div class="slide">
+        <img src="IMG_20250101_200753_489.jpg" alt="Artist">
+        <div class="slide-overlay">
+          <h3 class="slide-title">Musical Journey</h3>
+          <p class="slide-description">Every note tells a story</p>
+        </div>
+      </div>
+      
+      <!-- Navigation Arrows -->
+      <div class="slide-arrow prev-slide" onclick="changeSlide(-1)">❮</div>
+      <div class="slide-arrow next-slide" onclick="changeSlide(1)">❯</div>
+      
+      <!-- Navigation Dots -->
+      <div class="slide-dots" id="slideDots">
+        <!-- Dots will be added by JavaScript -->
+      </div>
     </div>
 
     <!-- Music Player -->
     <div class="music-player">
       <h1 class="glitter-text">My Music Player</h1>
       <audio id="audio" controls>
-        <source src=" Y CELEB x J CELEB x EMMY ZED - NKONDO" type="audio/mp3">
-        
+        <source src="Y CELEB x J CELEB x EMMY ZED - NKONDO" type="audio/mp3">
         Your browser does not support the audio element.
       </audio>
 
@@ -311,7 +472,7 @@
     </div>
 
     <!-- WhatsApp Icon -->
-    <div class="whatsapp-icon">
+    <div class="whatsapp-icon" id="contact">
       <a href="https://wa.me/+260774169681" target="_blank">📲</a>
     </div>
 
@@ -325,7 +486,7 @@
   <!-- Fixed Bottom Navigation Menu -->
   <div class="nav-menu">
     <a href="#home">Home</a>
-    <a href="#about">About</a>
+    <a href="#aboutSection">About</a>
     <a href="#terms">Terms</a>
     <a href="#contact">Contact</a>
     <a href="#privacy">Privacy</a>
@@ -336,6 +497,70 @@
     const audio = document.getElementById("audio");
     const playPauseBtn = document.getElementById("playPauseBtn");
     const locationStatus = document.getElementById("locationStatus");
+    
+    // Slideshow variables
+    let currentSlideIndex = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    let slideInterval;
+
+    // Initialize slideshow dots
+    function initializeSlideDots() {
+      const dotsContainer = document.getElementById('slideDots');
+      
+      // Clear existing dots
+      dotsContainer.innerHTML = '';
+      
+      // Create dots based on number of slides
+      for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement('div');
+        dot.className = i === 0 ? 'dot active' : 'dot';
+        dot.onclick = function() { showSlide(i); };
+        dotsContainer.appendChild(dot);
+      }
+    }
+
+    // Show specific slide
+    function showSlide(index) {
+      // Handle index bounds
+      if (index >= totalSlides) {
+        currentSlideIndex = 0;
+      } else if (index < 0) {
+        currentSlideIndex = totalSlides - 1;
+      } else {
+        currentSlideIndex = index;
+      }
+      
+      // Update slide classes
+      for (let i = 0; i < totalSlides; i++) {
+        slides[i].className = i === currentSlideIndex ? 'slide active' : 'slide';
+      }
+      
+      // Update dots
+      const dots = document.querySelectorAll('.dot');
+      for (let i = 0; i < dots.length; i++) {
+        dots[i].className = i === currentSlideIndex ? 'dot active' : 'dot';
+      }
+      
+      // Reset the interval timer to prevent quick transitions
+      resetSlideInterval();
+    }
+
+    // Change slide (for arrow navigation)
+    function changeSlide(direction) {
+      showSlide(currentSlideIndex + direction);
+    }
+
+    // Auto advance slideshow
+    function autoAdvanceSlide() {
+      showSlide(currentSlideIndex + 1);
+    }
+
+    // Reset the slide interval
+    function resetSlideInterval() {
+      clearInterval(slideInterval);
+      slideInterval = setInterval(autoAdvanceSlide, 5000); // Change slide every 5 seconds
+    }
 
     // Play/Pause functionality
     function togglePlay() {
@@ -447,24 +672,26 @@
       link.addEventListener('click', function(e) {
         e.preventDefault();
         const target = this.getAttribute('href').substring(1);
+        const targetEl = document.getElementById(target);
         
-        // Simple navigation handling
-        if (target === 'about') {
-          document.getElementById('aboutSection').scrollIntoView({ behavior: 'smooth' });
-        } else if (target === 'home') {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else if (target === 'contact') {
-          // Scroll to WhatsApp icon
-          document.querySelector('.whatsapp-icon').scrollIntoView({ behavior: 'smooth' });
-        } else {
-          // For future implementation (terms, privacy)
-          alert('Coming soon: ' + target + ' page');
+        // Scroll to target if it exists
+        if (targetEl) {
+          targetEl.scrollIntoView({ behavior: 'smooth' });
+        } else if (target === 'terms' || target === 'privacy') {
+          // For future implementation
+          alert('Coming soon: ' + target.charAt(0).toUpperCase() + target.slice(1) + ' page');
         }
       });
     });
 
     // Initialize page
     function init() {
+      // Initialize slideshow dots
+      initializeSlideDots();
+      
+      // Start slideshow auto-advance
+      resetSlideInterval();
+      
       // Set current time initially and update every second
       updateCurrentTime();
       setInterval(updateCurrentTime, 1000);
@@ -473,12 +700,6 @@
       audio.addEventListener('ended', function() {
         playPauseBtn.textContent = "▶️"; // Reset play button when audio ends
       });
-      
-      // Fix image animation timing for better slideshow
-      const images = document.querySelectorAll('.image-container img');
-      for (let i = 0; i < images.length; i++) {
-        images[i].style.animationDelay = (i * 5) + 's';
-      }
       
       // Initialize the map
       initMap();
